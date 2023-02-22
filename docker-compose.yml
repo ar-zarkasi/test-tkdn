@@ -1,0 +1,55 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-server
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/logs:/etc/nginx/logs
+      - ./www/api-costumer:/var/www/html/api
+    networks:
+      - default
+  mariadb:
+    image: mariadb:latest
+    container_name: database-test
+    restart: always
+    ports:
+      - "8082:3306"
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    environment:
+      - MARIADB_DATABASE=laravel
+      - MARIADB_ROOT_PASSWORD=toor
+    networks:
+      - default
+  backend:
+    build:
+      args:
+        user: arfan
+        uid: 1000
+      dockerfile: ./php8.1.Dockerfile
+    image: crud_api_test:arfan
+    container_name: test-arfan-crud-api
+    restart: unless-stopped
+    working_dir: /var/www/html/api
+    networks:
+      - default
+  frontend:
+    build:
+      dockerfile: ./node.Dockerfile
+    image: crud_test_frontend_tkdn:arfan
+    container_name: test-tkdn-crud-frontend
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "8081:3000"
+    networks:
+      - default
+
+networks:
+  default:
+    name: local-docker-network
+    driver: bridge

@@ -1,0 +1,7 @@
+node_modules
+/www/frontend/node_modules
+/www/frontend/.nuxt
+/www/frontend/.output
+/www/frontend/.env
+/www/api-costumer/vendor
+/www/api-costumer/.env
